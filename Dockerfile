@@ -116,8 +116,4 @@ COPY ./rootfs/usr/local/bin/supervisor-watcher /usr/local/bin/supervisor-watcher
 
 RUN chmod 777 /usr/local/bin/supervisor-watcher
 
-#COPY docker-entrypoint.sh /docker-entrypoint.sh
-#RUN chmod +x /docker-entrypoint.sh
-#ENTRYPOINT ["/docker-entrypoint.sh"]
-
 CMD ["/usr/bin/supervisord"]
