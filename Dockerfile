@@ -14,6 +14,7 @@ ENV LANG=${OS_LOCALE} \
 
 WORKDIR /tmp/provisioning/
 
+# Install
 RUN apt-get update \
 	&& SOFTWARE_BUILD_DEPS=" \
 	apt-transport-https \
@@ -22,9 +23,7 @@ RUN apt-get update \
 	make \
 	python-software-properties \
 	software-properties-common \
-	unzip \
-	" \
-# Install
+	unzip " \
 	&& apt-get install --no-install-recommends -y $SOFTWARE_BUILD_DEPS sudo curl iputils-ping locales \
 	&& LC_ALL=C.UTF-8 add-apt-repository -y ppa:ondrej/php \
 	&& rm -rf /var/lib/apt/lists/*
@@ -55,16 +54,14 @@ RUN apt-get update \
 		php5.6-redis \
 		php5.6-sqlite \
 		php5.6-tidy \
-		php5.6-xml \
-		" \
+		php5.6-xml " \
 	&& set -x \
 	&& apt-get install --no-install-recommends -y $PHP_BUILD_DEPS \
   && rm -rf /var/lib/apt/lists/*
 
-# fix permissions
+# fix permissions & CLEANUP
 RUN mkdir -p /var/www/ \
   && chown -R www-data:www-data /var/www \
-# CLEANUP
 	&& rm -rf /var/lib/apt/lists/*
 
 # Forward request and error logs to docker log collector
@@ -82,15 +79,14 @@ RUN mkdir -p /tmp/IONCUBE && cd /tmp/IONCUBE \
 	&& echo "zend_extension=ioncube_loader_lin.so" > /etc/php/5.6/fpm/conf.d/0-ioncube.ini \
 	&& rm -rf /tmp/IONCUBE
 
-# GEOIP databases
-RUN mkdir -p /usr/share/GeoIP && cd /usr/share/GeoIP \
-	&& curl -sS http://geolite.maxmind.com/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz -o GeoIP.dat.gz \
-	&& gunzip GeoIP.dat.gz \
-	&& curl -sS http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz -o GeoLiteCity.dat.gz \
-	&& gunzip GeoLiteCity.dat.gz \
-	&& curl -sS http://download.maxmind.com/download/geoip/database/asnum/GeoIPASNum.dat.gz -o GeoIPASNum.dat.gz \
-	&& gunzip GeoIPASNum.dat.gz \
-	&& rm -f /usr/share/GeoIP/*.dat.gz
+# deprecated, we now include the last available library
+# # GEOIP databases
+# RUN mkdir -p /usr/share/GeoIP && cd /usr/share/GeoIP \
+# 	&& curl -sS http://geolite.maxmind.com/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz -o GeoIP.dat.gz \
+# 	&& gunzip GeoIP.dat.gz \
+# 	&& curl -sS http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz -o GeoLiteCity.dat.gz \
+# 	&& gunzip GeoLiteCity.dat.gz \
+# 	&& rm -f /usr/share/GeoIP/*.dat.gz
 
 # Supervisor Demon manager and cron
 RUN apt-get update \
