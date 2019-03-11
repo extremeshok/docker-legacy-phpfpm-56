@@ -102,14 +102,10 @@ WORKDIR /var/www/
 
 EXPOSE 9000
 
-COPY ./rootfs/etc/php/5.6/fpm/conf.d/custom.ini /etc/php/5.6/fpm/conf.d/custom.ini
-COPY ./rootfs/etc/php/5.6/fpm/pool.d/www.conf /etc/php/5.6/fpm/pool.d/www.conf
-COPY ./rootfs/etc/php/5.6/fpm/php-fpm.conf /etc/php/5.6/fpm/php-fpm.conf
-
-
-COPY ./rootfs/etc/supervisord/ /etc/supervisor/
-COPY ./rootfs/usr/local/bin/supervisor-watcher /usr/local/bin/supervisor-watcher
+# add local files
+COPY ./rootfs/ /
 
 RUN chmod 777 /usr/local/bin/supervisor-watcher
+RUN chmod 744 /docker-entrypoint.sh
 
-CMD ["/usr/bin/supervisord"]
+ENTRYPOINT ["/docker-entrypoint.sh"]
